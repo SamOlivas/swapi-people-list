@@ -10,11 +10,11 @@ async function getPeople () {
   const people = await reply.json();
   peopleArr = await people.results.map( person => person );
   data.people = peopleArr;
-  render(peopleList, data.people);
+  renderLeft (peopleList, data.people);
 };
 
 //RENDER SECTION TO PAGE
-function render (element, data) {
+function renderLeft (element, data) {
   element.innerHTML = `
   <ul>
   ${data.map( item =>`<li> ${item.name} </li>`
@@ -23,17 +23,30 @@ function render (element, data) {
   `;
 }
 
+function renderRight (element, obj) {
+  const detailArr = Object.keys(obj).map(function(key) {
+    return [key, obj[key]]
+  })
+  element.innerHTML = `
+  <ul>
+  ${detailArr.map( stat =>`<li> ${stat} </li>`
+  ).join('')}
+  </ul>
+  `;
+}
+
 // PROVIDES INDEX OF CHAR IN DATA ON CLICK [current state: console logs index]
 peopleList.addEventListener('click', function (ev) {
   let charName = ev.target.innerHTML
-  console.log(charName)
   let charArray = data.people
+  let charIndex = 0
   for (let i = 0; i < charArray.length; i++) {
-    console.log(charArray[i].name)
     if ( ' '+charArray[i].name +' '  === charName) {
-      console.log( i )
-    }
-  }
+      charIndex = i
+    };
+  };
+  let charObject = data.people[charIndex]
+  renderRight(peopleDetails, charObject)
 });
 
 getPeople()
